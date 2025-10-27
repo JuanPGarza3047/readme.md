@@ -87,6 +87,9 @@
     <label for="reparacion">Costo de reparación:</label>
     <input type="number" id="reparacion" placeholder="Ej. 5000">
 
+    <label for="legalizar">Costo de legalización:</label>
+    <input type="number" id="legalizar" placeholder="Ej. 9500">
+
     <button onclick="calcular()">Calcular</button>
     <button onclick="exportarPDF()">Exportar a PDF</button>
 
@@ -102,9 +105,9 @@ function calcular() {
     const costo = parseFloat(document.getElementById("costo").value) || 0;
     const venta = parseFloat(document.getElementById("venta").value) || 0;
     const reparacion = parseFloat(document.getElementById("reparacion").value) || 0;
+    const legalizar = parseFloat(document.getElementById("legalizar").value) || 0;
 
     const transportacion = 15000;
-    const legalizar = 9500;
     const placas = 6000;
     const sat = venta * 0.20;
     const gastos = costo + transportacion + legalizar + placas + sat + reparacion;
@@ -115,6 +118,7 @@ function calcular() {
         <p><b>Costo del vehículo:</b> <span class="valor">${formatoMoneda(costo)}</span></p>
         <p><b>Precio de venta:</b> <span class="valor">${formatoMoneda(venta)}</span></p>
         <p><b>Costo de reparación:</b> <span class="valor">${formatoMoneda(reparacion)}</span></p>
+        <p><b>Costo de legalización:</b> <span class="valor">${formatoMoneda(legalizar)}</span></p>
         <hr>
         <h3>📋 Resumen de Gastos</h3>
         <p>Transportación: <span class="valor">${formatoMoneda(transportacion)}</span></p>
@@ -136,7 +140,7 @@ function exportarPDF() {
     window.print();
 }
 
-// ✅ Registrar el Service Worker (necesario para funcionar offline)
+// ✅ Registrar el Service Worker
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('service-worker.js')
