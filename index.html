@@ -83,6 +83,38 @@
         font-weight: bold;
         color: #007bff;
     }
+    /* ✅ Progress Bar Styles */
+    .progress-container {
+        width: 100%;
+        background: #ddd;
+        border-radius: 10px;
+        height: 22px;
+        margin-top: 10px;
+        overflow: hidden;
+        position: relative;
+    }
+    .progress-bar {
+        height: 100%;
+        width: 0%;
+        border-radius: 10px;
+        transition: width 0.6s ease, background-color 0.6s ease;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding-right: 8px;
+        box-sizing: border-box;
+        font-size: 13px;
+        font-weight: bold;
+        color: white;
+    }
+    .progress-label {
+        position: absolute;
+        right: 8px;
+        top: 2px;
+        font-size: 12px;
+        font-weight: bold;
+        color: white;
+    }
     @media print {
         button, input, label, h2 {
             display: none;
@@ -136,25 +168,32 @@ function calcular() {
     const gastos = costo + transportacion + legalizar + placas + sat + reparacion;
     const ganancia = venta - gastos;
 
-    // Recommended sale price range
     const precio_20 = gastos * 1.20;
     const precio_30 = gastos * 1.30;
+    const porcentajeGanancia = gastos > 0 ? (ganancia / gastos) * 100 : 0;
 
-    // Default style for profit
     let claseGanancia = "ganancia-cero";
     let icono = "";
+    let barraColor = "#ff9800";
+    let textoColor = "white";
 
-    // ⚙️ Determine visual feedback
     if (ganancia <= 0) {
         claseGanancia = "ganancia-negativa";
         icono = "⚠️";
-    } else if (venta < precio_20) {
-        // Sale price is below 20% profit recommendation
+        barraColor = "#dc3545";
+    } else if (porcentajeGanancia < 20) {
         claseGanancia = "ganancia-negativa";
         icono = "⚠️";
-    } else if (ganancia > 0) {
+        barraColor = "#dc3545";
+    } else if (porcentajeGanancia >= 20 && porcentajeGanancia < 30) {
+        claseGanancia = "ganancia-cero";
+        barraColor = "#ff9800";
+    } else {
         claseGanancia = "ganancia-positiva";
+        barraColor = "#28a745";
     }
+
+    if (barraColor === "#ff9800") textoColor = "black"; // orange bar gets black text
 
     const html = `
         <h3>📋 Detalle del Cálculo</h3>
@@ -171,7 +210,18 @@ function calcular() {
         <p>Reparaciones: <span class="valor">${formatoMoneda(reparacion)}</span></p>
         <hr>
         <p><b>Total de gastos:</b> <span class="valor">${formatoMoneda(gastos)}</span></p>
-        <p><b>Ganancia neta:</b> <span class="valor ${claseGanancia}">${icono} ${formatoMoneda(ganancia)}</span></p>
+        <p><b>Ganancia neta:</b> 
+            <span class="valor ${claseGanancia}">
+                ${icono} ${formatoMoneda(ganancia)} 
+                (${porcentajeGanancia.toFixed(1)}%)
+            </span>
+        </p>
+        <div class="progress-container">
+            <div class="progress-bar" 
+                style="width:${Math.min(porcentajeGanancia,100)}%; background-color:${barraColor}; color:${textoColor};">
+                ${porcentajeGanancia.toFixed(1)}%
+            </div>
+        </div>
         <div class="recomendacion">
             <h3>💡 Recomendación de Precio de Venta</h3>
             <p>Para una ganancia del <b>20%</b>: <span>${formatoMoneda(precio_20)}</span></p>
