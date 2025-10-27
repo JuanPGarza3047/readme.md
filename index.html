@@ -113,6 +113,10 @@ function calcular() {
     const gastos = costo + transportacion + legalizar + placas + sat + reparacion;
     const ganancia = venta - gastos;
 
+    // 💡 Recommended sale price range
+    const precio_20 = gastos * 1.20;
+    const precio_30 = gastos * 1.30;
+
     const html = `
         <h3>📋 Detalle del Cálculo</h3>
         <p><b>Costo del vehículo:</b> <span class="valor">${formatoMoneda(costo)}</span></p>
@@ -129,6 +133,10 @@ function calcular() {
         <hr>
         <p><b>Total de gastos:</b> <span class="valor">${formatoMoneda(gastos)}</span></p>
         <p><b>Ganancia neta:</b> <span class="valor">${formatoMoneda(ganancia)}</span></p>
+        <hr>
+        <h3>💡 Recomendación de Precio de Venta</h3>
+        <p>Para una ganancia del <b>20%</b>: <span class="valor">${formatoMoneda(precio_20)}</span></p>
+        <p>Para una ganancia del <b>30%</b>: <span class="valor">${formatoMoneda(precio_30)}</span></p>
     `;
 
     const resultado = document.getElementById("resultado");
