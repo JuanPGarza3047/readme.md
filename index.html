@@ -164,13 +164,13 @@ function calcular() {
 
     const transportacion = 15000;
     const placas = 6000;
-    const sat = venta * 0.20;
-    const gastos = costo + transportacion + legalizar + placas + sat + reparacion;
-    const ganancia = venta - gastos;
+    const gastos = costo + transportacion + legalizar + placas + reparacion;
+    const sat = (venta - gastos) * 0.20;
+    const ganancia = venta - gastos - sat;
 
-    const precio_20 = gastos * 1.20;
-    const precio_30 = gastos * 1.30;
-    const porcentajeGanancia = gastos > 0 ? (ganancia / gastos) * 100 : 0;
+    const precio_20 = (gastos + sat) * 1.20;
+    const precio_30 = (gastos + sat) * 1.30;
+    const porcentajeGanancia = (gastos + sat) > 0 ? (ganancia / (gastos + sat)) * 100 : 0;
 
     let claseGanancia = "ganancia-cero";
     let icono = "";
@@ -209,7 +209,7 @@ function calcular() {
         <p>Impuestos (SAT 20%): <span class="valor">${formatoMoneda(sat)}</span></p>
         <p>Reparaciones: <span class="valor">${formatoMoneda(reparacion)}</span></p>
         <hr>
-        <p><b>Total de gastos:</b> <span class="valor">${formatoMoneda(gastos)}</span></p>
+        <p><b>Total de gastos:</b> <span class="valor">${formatoMoneda((gastos + sat))}</span></p>
         <p><b>Ganancia neta:</b> 
             <span class="valor ${claseGanancia}">
                 ${icono} ${formatoMoneda(ganancia)} 
