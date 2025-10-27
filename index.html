@@ -1,228 +1,143 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es-MX">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Calculadora de Ganancia Dinámica</title>
-<meta name="theme-color" content="#007bff">
-
-<style>
-body {
-    font-family: Arial, sans-serif;
-    background: #f4f4f4;
-    margin: 0;
-    padding: 20px;
-}
-.container {
-    background: #fff;
-    padding: 25px;
-    border-radius: 10px;
-    max-width: 600px;
-    margin: auto;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-h2 {
-    text-align: center;
-    color: #333;
-}
-label {
-    display: block;
-    margin-top: 10px;
-    font-weight: bold;
-}
-input, select {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-button {
-    background: #007bff;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 15px;
-}
-button:hover {
-    background: #0056b3;
-}
-#resultado {
-    margin-top: 25px;
-    padding: 15px;
-    background: #e9f5ff;
-    border-radius: 10px;
-    display: none;
-}
-.valor {
-    float: right;
-}
-.ganancia-positiva { color: #28a745; font-weight: bold; }
-.ganancia-negativa { color: #dc3545; font-weight: bold; }
-.ganancia-cero { color: #ff9800; font-weight: bold; }
-.recomendacion {
-    background: #f9f9f9;
-    border-left: 5px solid #007bff;
-    padding: 10px;
-    border-radius: 8px;
-    margin-top: 15px;
-}
-.progress-container {
-    width: 100%;
-    background: #ddd;
-    border-radius: 10px;
-    height: 22px;
-    margin-top: 10px;
-    overflow: hidden;
-    position: relative;
-}
-.progress-bar {
-    height: 100%;
-    width: 0%;
-    border-radius: 10px;
-    transition: width 0.6s ease, background-color 0.6s ease;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    padding-right: 8px;
-    box-sizing: border-box;
-    font-size: 13px;
-    font-weight: bold;
-    color: white;
-}
-@media print {
-    button, input, label, h2 {
-        display: none;
-    }
-    body {
-        background: white;
-    }
-    #resultado {
-        display: block !important;
-    }
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Precio de Venta - Jetta 2015 Monterrey</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        label {
+            font-weight: bold;
+            margin-top: 10px;
+            display: block;
+        }
+        input[type="number"], input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+        }
+        .result p {
+            margin: 5px 0;
+        }
+        .price-range {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        .price-range span {
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
 
 <div class="container">
-<h2>💰 Calculadora de Ganancia de Vehículo Dinámica</h2>
+    <h1>Calculadora de Precio de Venta</h1>
+    <label for="modelo">Modelo (e.g., 2.5 Sport Tiptronic):</label>
+    <input type="text" id="modelo" placeholder="Ejemplo: 2.5 Sport Tiptronic">
+    
+    <label for="año">Año (e.g., 2015):</label>
+    <input type="number" id="año" value="2015" readonly>
+    
+    <label for="km">Kilometraje (e.g., 85000):</label>
+    <input type="number" id="km" placeholder="Ejemplo: 85000">
+    
+    <button onclick="calcularPrecio()">Calcular Rango de Precio</button>
 
-<label for="modelo">Modelo del vehículo:</label>
-<input type="text" id="modelo" placeholder="Ej. Jetta, Corolla, Civic">
-
-<label for="anio">Año del vehículo:</label>
-<input type="number" id="anio" placeholder="Ej. 2015">
-
-<label for="km">Kilometraje:</label>
-<input type="number" id="km" placeholder="Ej. 85000">
-
-<label for="costo">Costo del vehículo:</label>
-<input type="number" id="costo" placeholder="Ej. 50000">
-
-<label for="venta">Precio de venta estimado:</label>
-<input type="number" id="venta" placeholder="Ej. 150000">
-
-<label for="reparacion">Costo de reparación:</label>
-<input type="number" id="reparacion" placeholder="Ej. 5000">
-
-<label for="legalizar">Costo de legalización:</label>
-<input type="number" id="legalizar" placeholder="Ej. 9500">
-
-<button onclick="calcular()">Calcular</button>
-<button onclick="exportarPDF()">Exportar a PDF</button>
-
-<div id="resultado"></div>
+    <div id="resultado" class="result" style="display: none;">
+        <p><strong>Rango de Precio Sugerido:</strong></p>
+        <p id="precio-min"></p>
+        <p id="precio-max"></p>
+        <div class="price-range">
+            <span id="precio-min-val"></span>
+            <span id="precio-max-val"></span>
+        </div>
+    </div>
 </div>
 
 <script>
-function formatoMoneda(valor) {
-    return "$" + valor.toLocaleString("es-MX", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-}
-
-// Función dinámica para obtener rango recomendado
-function rangoDinamico(modelo, anio, km, costoTotal) {
-    // Valores base simulados (ideal: reemplazar con API real o JSON con precios de mercado)
-    const preciosBase = {
-        'Jetta': { 2015: { precio_min: 150000, precio_max: 215000, km_promedio: 90000 } },
-        'Corolla': { 2015: { precio_min: 160000, precio_max: 220000, km_promedio: 95000 } },
-        'Civic': { 2015: { precio_min: 155000, precio_max: 210000, km_promedio: 90000 } },
-    };
-
-    let info = preciosBase[modelo]?.[anio];
-    if(!info) {
-        // Si no existe modelo/año, calculamos ±20% del costo total
-        return {min: costoTotal*1.2, max: costoTotal*1.3};
+    async function obtenerPreciosMercadoLibre(modelo, año) {
+        const url = `https://api.mercadolibre.com/sites/MX/search?q=jetta%202015%20${modelo}&filters=year:${año}`;
+        const response = await fetch(url);
+        const data = await response.json();
+        return data.results.map(item => item.price);
     }
 
-    let ajusteKm = 1;
-    if(km < info.km_promedio) ajusteKm += 0.1; // +10%
-    else if(km > info.km_promedio) ajusteKm -= 0.1; // -10%
+    async function calcularPrecio() {
+        const modelo = document.getElementById('modelo').value.trim();
+        const año = parseInt(document.getElementById('año').value);
+        const km = parseInt(document.getElementById('km').value);
 
-    return {
-        min: Math.round(info.precio_min * ajusteKm),
-        max: Math.round(info.precio_max * ajusteKm)
-    };
-}
+        if (!modelo || !km) {
+            alert('Por favor, ingresa todos los datos requeridos.');
+            return;
+        }
 
-function calcular() {
-    const modelo = document.getElementById("modelo").value.trim();
-    const anio = parseInt(document.getElementById("anio").value);
-    const km = parseInt(document.getElementById("km").value);
-    const costo = parseFloat(document.getElementById("costo").value) || 0;
-    const venta = parseFloat(document.getElementById("venta").value) || 0;
-    const reparacion = parseFloat(document.getElementById("reparacion").value) || 0;
-    const legalizar = parseFloat(document.getElementById("legalizar").value) || 0;
+        try {
+            const precios = await obtenerPreciosMercadoLibre(modelo, año);
+            if (precios.length === 0) {
+                alert('No se encontraron resultados para este modelo y año.');
+                return;
+            }
 
-    const transportacion = 15000;
-    const placas = 6000;
-    const sat = venta*0.2;
-    const gastos = costo + transportacion + legalizar + placas + sat + reparacion;
-    const ganancia = venta - gastos;
-    const porcentajeGanancia = gastos>0 ? (ganancia/gastos)*100 : 0;
+            const precioMin = Math.min(...precios);
+            const precioMax = Math.max(...precios);
 
-    const rango = rangoDinamico(modelo, anio, km, gastos);
+            const ajusteKm = km < 90000 ? 1.05 : 1;
+            const precioMinAjustado = precioMin * ajusteKm;
+            const precioMaxAjustado = precioMax * ajusteKm;
 
-    // Determinar estilo de ganancia
-    let claseGanancia = "ganancia-cero";
-    let icono = "";
-    let barraColor = "#ff9800";
-    let textoColor = "white";
+            const resultado = document.getElementById('resultado');
+            document.getElementById('precio-min').textContent = `Mínimo: $${precioMinAjustado.toLocaleString()}`;
+            document.getElementById('precio-max').textContent = `Máximo: $${precioMaxAjustado.toLocaleString()}`;
+            document.getElementById('precio-min-val').textContent = `$${precioMinAjustado.toLocaleString()}`;
+            document.getElementById('precio-max-val').textContent = `$${precioMaxAjustado.toLocaleString()}`;
 
-    if(ganancia<=0 || porcentajeGanancia<20){ claseGanancia="ganancia-negativa"; icono="⚠️"; barraColor="#dc3545";}
-    else if(porcentajeGanancia>=20 && porcentajeGanancia<30){ claseGanancia="ganancia-cero"; barraColor="#ff9800"; textoColor="black";}
-    else{ claseGanancia="ganancia-positiva"; barraColor="#28a745";}
-
-    const html = `
-        <h3>📋 Detalle del Cálculo</h3>
-        <p><b>Modelo:</b> <span class="valor">${modelo}</span></p>
-        <p><b>Año:</b> <span class="valor">${anio}</span></p>
-        <p><b>Kilometraje:</b> <span class="valor">${km.toLocaleString()} km</span></p>
-        <p><b>Costo del vehículo:</b> <span class="valor">${formatoMoneda(costo)}</span></p>
-        <p><b>Precio de venta:</b> <span class="valor">${formatoMoneda(venta)}</span></p>
-        <p><b>Costo de reparación:</b> <span class="valor">${formatoMoneda(reparacion)}</span></p>
-        <p><b>Costo de legalización:</b> <span class="valor">${formatoMoneda(legalizar)}</span></p>
-        <hr>
-        <p><b>Total de gastos:</b> <span class="valor">${formatoMoneda(gastos)}</span></p>
-        <p><b>Ganancia neta:</b> <span class="valor ${claseGanancia}">${icono} ${formatoMoneda(ganancia)} (${porcentajeGanancia.toFixed(1)}%)</span></p>
-        <div class="progress-container">
-            <div class="progress-bar" style="width:${Math.min(porcentajeGanancia,100)}%; background-color:${barraColor}; color:${textoColor};">
-                ${porcentajeGanancia.toFixed(1)}%
-            </div>
-        </div>
-        <div class="recomendacion">
-            <h3>💡 Rango de Precio Recomendado</h3>
-            <p>Precio mínimo sugerido: <span>${formatoMoneda(rango.min)}</span></p>
-            <p>Precio máximo sugerido: <span>${formatoMoneda(rango.max)}</span></p>
-        </div>
-    `;
-    document.getElementById("resultado").innerHTML = html;
-    document.getElementById("resultado").style.display = "block";
-}
-
-function exportarPDF(){ window.print(); }
+            resultado.style.display = 'block';
+        } catch (error) {
+            console.error('Error al obtener los precios:', error);
+            alert('Hubo un error al obtener los precios. Intenta nuevamente.');
+        }
+    }
 </script>
 
 </body>
