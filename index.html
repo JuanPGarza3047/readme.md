@@ -140,10 +140,21 @@ function calcular() {
     const precio_20 = gastos * 1.20;
     const precio_30 = gastos * 1.30;
 
-    // Determine color class for ganancia
+    // Default style for profit
     let claseGanancia = "ganancia-cero";
-    if (ganancia > 0) claseGanancia = "ganancia-positiva";
-    else if (ganancia < 0) claseGanancia = "ganancia-negativa";
+    let icono = "";
+
+    // ⚙️ Determine visual feedback
+    if (ganancia <= 0) {
+        claseGanancia = "ganancia-negativa";
+        icono = "⚠️";
+    } else if (venta < precio_20) {
+        // Sale price is below 20% profit recommendation
+        claseGanancia = "ganancia-negativa";
+        icono = "⚠️";
+    } else if (ganancia > 0) {
+        claseGanancia = "ganancia-positiva";
+    }
 
     const html = `
         <h3>📋 Detalle del Cálculo</h3>
@@ -160,7 +171,7 @@ function calcular() {
         <p>Reparaciones: <span class="valor">${formatoMoneda(reparacion)}</span></p>
         <hr>
         <p><b>Total de gastos:</b> <span class="valor">${formatoMoneda(gastos)}</span></p>
-        <p><b>Ganancia neta:</b> <span class="valor ${claseGanancia}">${formatoMoneda(ganancia)}</span></p>
+        <p><b>Ganancia neta:</b> <span class="valor ${claseGanancia}">${icono} ${formatoMoneda(ganancia)}</span></p>
         <div class="recomendacion">
             <h3>💡 Recomendación de Precio de Venta</h3>
             <p>Para una ganancia del <b>20%</b>: <span>${formatoMoneda(precio_20)}</span></p>
